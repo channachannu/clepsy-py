@@ -10,6 +10,8 @@ clepsy does **not** run any authentication logic locally. It's a thin wrapper ov
 your deployed DAF service's HTTP API, so identity stays centralized in one place —
 this is what makes login shared across every project using clepsy.
 
+[![PyPI](https://img.shields.io/pypi/v/clepsy)](https://pypi.org/project/clepsy/)
+
 ## Install
 
 ```bash
