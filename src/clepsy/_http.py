@@ -95,3 +95,7 @@ class HttpClient:
             raise ClepsyConnectionError(detail or f"DAF returned {response.status_code}")
 
         raise ClepsyError(detail or f"Unexpected response: {response.status_code}")
+
+    def close(self) -> None:
+        """Close the underlying requests.Session and release its connections."""
+        self._session.close()

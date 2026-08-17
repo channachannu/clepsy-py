@@ -83,3 +83,20 @@ class ClepsyClient:
             return True
         except Exception:
             return False
+
+    def close(self) -> None:
+        """Close the underlying HTTP session and release its connections.
+
+        Not required for short scripts (Python cleans this up on exit
+        anyway), but matters for anything long-running -- a web server
+        holding a ClepsyClient for its whole lifetime, or a test suite
+        creating many clients -- where leaving sessions open leaks
+        connections over time.
+        """
+        self._http.close()
+
+    def __enter__(self) -> ClepsyClient:
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.close()
