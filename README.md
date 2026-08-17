@@ -10,6 +10,8 @@ clepsy does **not** run any authentication logic locally. It's a thin wrapper ov
 your deployed DAF service's HTTP API, so identity stays centralized in one place —
 this is what makes login shared across every project using clepsy.
 
+[![PyPI](https://img.shields.io/pypi/v/clepsy)](https://pypi.org/project/clepsy/)
+
 ## Install
 
 ```bash
@@ -27,9 +29,17 @@ client = ClepsyClient(base_url="https://your-daf-api.com", api_key="daf_c_xxxxx"
 # time value goes at login.
 client.register("Botnet", "Botxxnetxx", placeholder="x")
 
-# At login time, fill the placeholder positions with the current UTC HHMM.
-dynamic = client.current_dynamic_value()          # e.g. "2130"
-login_password = f"Bot{dynamic}net{dynamic[2:]}"  # depends on your pattern
+# At login time, fill each placeholder run with the matching slice of the
+# current UTC HHMM value, in order. The split depends on where the x's
+# land in YOUR pattern -- there's no universal formula.
+#
+# For "Botxxnetxx" -> two 2-char dynamic runs -> split HHMM in half:
+dynamic = client.current_dynamic_value()                     # e.g. "2130"
+login_password = f"Bot{dynamic[:2]}net{dynamic[2:]}"          # "Bot21net30"
+
+# For a pattern with ONE contiguous run at the end (e.g. "Botnetxxxx"),
+# just append the full 4-digit value, no split needed:
+#   login_password = f"Botnet{dynamic}"
 
 result = client.authenticate("Botnet", login_password)
 if result.success:
@@ -61,7 +71,7 @@ log in on Project B" works by construction.
 
 ## Status
 
-v0.1.0 — early, built against DAF Phase 1. API surface may still change before 1.0.
+v0.1.1 — early, built against DAF Phase 1. API surface may still change before 1.0.
 
 ## License
 
